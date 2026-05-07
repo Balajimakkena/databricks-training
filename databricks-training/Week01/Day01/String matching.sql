@@ -1,34 +1,23 @@
-## Question 1
-Select employees whose names start with 'J'.
-
-**Answer:**
+--1.Select employees whose names start with 'J'.
 Select name from Employee
 where name like "J%"
 
-##Question 2
-Select employees whose names end with 'e'.
 
-**Answer:**
+--2.Select employees whose names end with 'e'.
 Select name from Employee
 where name like "%e"
 
-##Question 3
-Select employes whose names contain'a'
 
-**Answer:**
+--3.Select employes whose names contain'a'
 Select name from Employee
 where name like "%a%"
 
-##Question 4
-Select employees whose names are exactly 9 characters long
 
-**Answer:**
+--4.Select employees whose names are exactly 9 characters long
 Select name from Employee
 having length(name)=9
 
-##Question 5
-Select employees whose names have 'o' as the second character.
 
-**Answer:**
+--5.Select employees whose names have 'o' as the second character.
 Select name from Employee
 where name like "_o%"
