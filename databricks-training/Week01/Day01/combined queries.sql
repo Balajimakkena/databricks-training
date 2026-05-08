@@ -37,3 +37,51 @@ join Department d
 ON e.department_id = d.department_id
 group by d.name
 having COUNT(e.emp_id) > 2;
+
+
+--6.Select the name and salary of employees whose salary is above the average salary of their department.
+Select e.name as Emp_name,e.salary as Emp_sal
+From Employee e
+join Department d
+on e.department_id=d.department_id
+where e.salary>(Select avg(e1.salary)
+                From Employee e1
+                where e1.department_id=e.department_id)
+
+
+--7.Select the names of employees who are hired on the same date as the oldest employee in the company
+Select name
+From Employee
+where hire_date = (
+    Select MIN(hire_date)
+    From Employee
+)
+
+
+--8.Select the department names along with the total number of projects they are working on,ordered by the number of projects.
+Select d.name as Dept_name,count(distict(e.emp_id)) as No_of_projects
+from Employee e
+join Department d
+join Project p
+on e.department_id=d.department_id=p.department_id
+group by d.name
+order by No_of_projects desc
+
+
+--9.Select the employee name with the highest salary in each department.
+Select d.name as Emp_name,max(e.salary) as Highest_sal
+from Employee e
+join Department d
+on e.department_id=d.department_id
+group by d.name
+order by Highest_sal desc
+
+
+--10.Select names and salaries of the employees who are older than the average in of their employees
+Select e.name,e.salary
+from Employee e
+join Department d
+on e.department_id=d.department_id
+where e.age>(Select avg(age)
+from Employee e
+where e.department_id=d.department_id)
