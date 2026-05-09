@@ -32,4 +32,60 @@ Select employee_name,
                     ORDER by salary desc) as dept_rank
 from employees
 
+--6.Display the highest salary in each department using a window function.
+Select * 
+From (Select employee_name,
+        department,
+        salary,
+        Rank() over (PARTITION by department
+                    ORDER by salary desc) as dept_rank
+    from employees) as employee_rank
+where dept_rank=1
 
+--7.Calculate the running total of order amounts ordered by order_date.
+Select order_id,
+        order_date,
+        order_amount,
+        sum(order_amount) over (order by order_date asc) as running_total,
+ from orders
+
+
+--8.Calculate the cumulative sales amount for each employee.
+Select employee_id,
+        order_id,
+        order_date,
+        total_amount,
+        sum(total_amount) over (PARTITION by employee_id
+                                order by order_date asc) as cumulative_total
+from orders
+
+
+--9.Use LAG() to show the previous order amount for each customer.
+Select customer_id,
+        order_id,
+        order_date,
+        total_amount,
+        LAG(total_amount) over (PARTITION by customer_id
+                                order by order_date) as Previous_order_amount
+from orders
+
+
+--10.Use LEAD() to show the next order amount for each customer.
+Select customer_id,
+        order_id,
+        order_date,
+        total_amount,
+        LEAD(total_amount) over (PARTITION by customer_id
+                                order by order_date) as Next_order_amount
+from orders
+
+
+--11.Find the difference between the current order amount and previous order amount.
+Select customer_id,
+        order_id,
+        order_date,
+        total_amount,
+        LAG(total_amount) over (PARTITION by customer_id
+                                order by order_date) as Previous_order_amount,
+        total_amount  - Previous_order_amount as Amount_difference
+from orders
