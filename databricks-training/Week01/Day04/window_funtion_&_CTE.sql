@@ -197,3 +197,141 @@ WHERE total_sales > (
     SELECT AVG(total_sales)
     FROM employee_sales
 )
+
+--23.Create multiple CTEs to calculate customer total spending and rankings.
+WITH cust_ranking as (Select customer_id,
+                                total_amount,
+                                sum(total_amount) over (partition 									by customer_id) as cust_total
+                               
+                        from orders)
+
+select distinct(cr.customer_id),
+		c.customer_name,
+		cr.cust_total,
+                dense_rank() over (order by cust_total desc) as c_rank
+from cust_ranking cr
+left join customers c
+on cr.customer_id=c.customer_id
+
+--24.Write a recursive CTE to generate numbers from 1 to 10.
+With recursive numbers as (Select 1 as num
+
+                        union all
+
+                        Select num+1
+                        from numbers
+                        where num<10)
+select *
+From numbers
+
+
+--25.Use a recursive CTE to display employee hierarchy data.
+with recursive emp_rec as(Select employee_id,
+                                employee_name,
+                                manager_id,
+                                  1 as level
+                        from employees
+                        where manager_id is null
+                        union all
+                        select e.employee_id,
+                                e.employee_name,
+                                e.manager_id,
+                                er.level+1
+                        from employees e
+                        join emp_rec er
+                        on e.manager_id=er.employee_id)
+ Select * from emp_rec
+
+
+ --26.Create a CTE that filters orders above the average order amount.
+ with avg_order as (Select customer_id,
+                           order_id,
+                           order_date,
+                           total_amount,
+                           avg(total_amount) as avg_total
+                   from orders)
+select * from avg_order
+where total_amount>avg_total
+
+--27.Use a CTE and window function together to rank customers by total spending.
+with total_rank as (Select o.customer_id,
+                     	   c.customer_name,
+                           sum(o.total_amount) as total
+                          
+                   from orders o
+                    join customers c
+                    on o.customer_id=c.customer_id
+                   group by customer_id)
+select customer_name,
+        total,
+        rank() over (order by total desc) as Rank_by_spending
+ from total_rank
+
+
+
+--28.Find the second-highest salary in each department.
+ with second_highest as
+                        (Select employee_name,
+                                department,
+                                salary,
+                                rank() over(partition by department
+                                           order by salary desc) as dept_rank
+                        from employees)
+
+Select  employee_name,
+          department,
+           salary,
+from second_highest
+where dept_rank=2
+
+
+--29.Display the difference between each employee salary and the department maximum salary.
+with max_salary as 
+               () Select  employee_name,
+                        department,
+                         salary,
+                        max(salary) over (partition by department) as max_sal
+                from employees )
+Select  employee_name,
+          department,
+           salary,
+           max_sal - salary as difference_sal
+from max_salary
+
+
+--30.Combine CTEs and window functions to find the top-performing employee in each department based on totalsales.
+WITH employee_sales AS (
+
+    SELECT e.employee_id,
+           e.employee_name,
+           e.department,
+           SUM(o.total_amount) AS total_sales
+    FROM employees e
+    JOIN orders o
+    ON e.employee_id = o.employee_id
+    GROUP BY e.employee_id,
+             e.employee_name,
+             e.department
+),
+
+ranked_employees AS (
+
+    SELECT employee_id,
+           employee_name,
+           department,
+           total_sales,
+
+           RANK() OVER(
+               PARTITION BY department
+               ORDER BY total_sales DESC
+           ) AS sales_rank
+
+    FROM employee_sales
+)
+
+SELECT employee_id,
+       employee_name,
+       department,
+       total_sales
+FROM ranked_employees
+WHERE sales_rank = 1;
