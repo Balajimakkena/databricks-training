@@ -1,4 +1,4 @@
-# Sql Windows Function Assignment
+# SQL Window FunctionS Assignment
 # Covered SQL topics
 - `RANK()`
 - `DENSE_RANK()`
