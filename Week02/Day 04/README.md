@@ -1,5 +1,6 @@
 # Sql Windows Function Assignment
 # Covered SQL topics
--ROW_NUMBER()
--RANK()
--DENSE_RANK()
+- `RANK()`
+- `DENSE_RANK()`
+- `ROW_NUMBER()`
+ 
