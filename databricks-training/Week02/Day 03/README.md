@@ -1,24 +1,5 @@
 # --Practice problems on SQL
-# Customer Account Status Evaluation
-
-## Concepts Used
-
-### Numeric Functions
-- `ABS()`
-- `SIGN()`
-
-### Date Functions
-- `DATEDIFF()`
-
-### String Functions
-- `CONCAT()`
-- `UPPER()`
-- `LOWER()`
-
-### Conditional Functions
-- `CASE`
  
-
 # SQL Functions Covered
 
 ## String Functions
